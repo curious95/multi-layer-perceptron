@@ -1,5 +1,5 @@
 import numpy as np
-np.random.seed(6700)
+
 
 # tanh activation function
 def tanH_act(val):
@@ -54,8 +54,9 @@ def forward(hyper_params, input, label):
 
 
 # backward propagation module
-def backward(learning_rate, hyper_params, input, label, cache):
-    n = input.shape[0]
+def backward(hyper_params, input, label, cache):
+    n_row = input.shape[0]
+    learning_rate = hyper_params["learning_rate"]
 
     W1 = hyper_params["W1"]
     W2 = hyper_params["W2"]
@@ -75,16 +76,18 @@ def backward(learning_rate, hyper_params, input, label, cache):
     else:
         dZ2 = A2 - label
 
-    dW2 = 1 / n * (A1.T @ dZ2)
-    W2 -= learning_rate * dW2
+    dW2 = 1 / n_row * (A1.T @ dZ2)
     dZ1 = (dZ2 @ W2.T) * hidden_act_val
-    dW1 = 1 / n * (input.T @ dZ1)
-    W1 -= learning_rate * dW1
+    dW1 = 1 / n_row * (input.T @ dZ1)
 
-    hyper_params["W1"] = W1
-    hyper_params["W2"] = W2
+    return hyper_params, dW1, dW2
 
+# Function for Updating Weights
+def updateWeights(hyper_params,dW1,dW2):
+    hyper_params["W1"] -= hyper_params["learning_rate"]* dW1
+    hyper_params["W2"] -= hyper_params["learning_rate"]* dW2
     return hyper_params
+
 
 # fitting
 def mlp_fit(hyper_params, input, label):
@@ -93,12 +96,13 @@ def mlp_fit(hyper_params, input, label):
     learning_rate = hyper_params["learning_rate"]
     for i in range(epochs):
         cache, cost = forward(hyper_params, input, label)
-        hyper_params = backward(learning_rate, hyper_params, input, label, cache)
+        hyper_params,dW1,dW2 = backward(hyper_params, input, label, cache)
+        hyper_params = updateWeights(hyper_params,dW1,dW2)
 
         # logs
-        if i % 10 == 0:
+        if i % 50 == 0:
             loss_log.append(np.asscalar(cost))
-            print("Loss after {} iterations: {:.3f}".format(i, cost))
+            print("Iteration = {}   Loss = {:.3f}".format(i, cost))
 
     return hyper_params, loss_log
 
@@ -113,12 +117,12 @@ def predict(hyper_params, input):
     return predicted
 
 
-#model
-def mlp(input_train, label_train, input_test, label_test, hidden, output, no_hidden_neurons, epochs, learning_rate):
+# model initialization function
+def train_mlp(input_train, label_train, input_test, label_test, hidden_activation_func, output__activation_func, no_hidden_neurons, epochs, learning_rate):
 
     hyper_params = init_model_hyper_params(input_train, label_train, no_hidden_neurons)
-    hyper_params["hidden_layer_func"] = hidden
-    hyper_params["output_layer_func"] = output
+    hyper_params["hidden_layer_func"] = hidden_activation_func
+    hyper_params["output_layer_func"] = output__activation_func
     hyper_params["epochs"] = epochs
     hyper_params["learning_rate"] = learning_rate
 
@@ -128,15 +132,8 @@ def mlp(input_train, label_train, input_test, label_test, hidden, output, no_hid
     train_acc = (100 * (1 - np.mean(np.abs(label_train - predicted_label_train))))
     test_acc = (100 * (1 - np.mean(np.abs(label_test - predicted_label_test))))
 
-    print("{:.1f}% training acc.".format(train_acc))
-    print("{:.1f}% test acc.".format(test_acc))
+    print("Accuracy during training = {:.1f}%".format(train_acc))
+    print("Accuracy during testing = {:.1f}%".format(test_acc))
 
-    return {"PARAMS": hyper_params, "COST": cost, "ACC": [train_acc, test_acc], "LR": learning_rate, "Predicted": predicted_label_test,
+    return {"PARAMS": hyper_params, "COST": cost, "Accuracies": [train_acc, test_acc], "learing_rate": learning_rate, "Predicted": predicted_label_test,
             "Y_test": label_test}
-
-# data init
-input=np.array([[0,0],[0,1],[1,0],[1,1]])
-label=np.array([[0],[1],[1],[0]])
-
-#model
-mlp(input,label,input,label,"tanh","sigmoid",3,400,0.3)
