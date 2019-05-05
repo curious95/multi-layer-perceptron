@@ -100,7 +100,7 @@ def mlp_fit(hyper_params, input, label):
         hyper_params = updateWeights(hyper_params,dW1,dW2)
 
         # logs
-        if i % 50 == 0:
+        if i % 1000 == 0:
             loss_log.append(np.asscalar(cost))
             print("Iteration = {}   Loss = {:.3f}".format(i, cost))
 
@@ -118,7 +118,7 @@ def predict(hyper_params, input):
 
 
 # model initialization function
-def train_mlp(input_train, label_train, input_test, label_test, hidden_activation_func, output__activation_func, no_hidden_neurons, epochs, learning_rate):
+def train_mlp(input_train, label_train, input_test, label_test, hidden_activation_func, output__activation_func, no_hidden_neurons, epochs, learning_rate, logging_control):
 
     hyper_params = init_model_hyper_params(input_train, label_train, no_hidden_neurons)
     hyper_params["hidden_layer_func"] = hidden_activation_func
@@ -132,8 +132,9 @@ def train_mlp(input_train, label_train, input_test, label_test, hidden_activatio
     train_acc = (100 * (1 - np.mean(np.abs(label_train - predicted_label_train))))
     test_acc = (100 * (1 - np.mean(np.abs(label_test - predicted_label_test))))
 
-    print("Accuracy during training = {:.1f}%".format(train_acc))
-    print("Accuracy during testing = {:.1f}%".format(test_acc))
+    if logging_control:
+        print("Accuracy during training = {:.1f}%".format(train_acc))
+        print("Accuracy during testing = {:.1f}%".format(test_acc))
 
     return {"PARAMS": hyper_params, "COST": cost, "Accuracies": [train_acc, test_acc], "learing_rate": learning_rate, "Predicted": predicted_label_test,
-            "Y_test": label_test}
+            "Actual": label_test}
