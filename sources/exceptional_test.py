@@ -24,7 +24,7 @@ label_test = label [16000:,:]
 
 
 # for 10 hidden units
-result = model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",10,1000,0.8,False)
+result = model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",10,1000,0.5,False)
 predicted = ["".join([str(i) for i in elem]) for elem in result["Predicted"]]
 labels = ["".join([str(i) for i in elem]) for elem in result["Actual"]]
 correctlyPredicted = [i for i in range(3999) if predicted[i]==labels[i]]
@@ -32,7 +32,7 @@ print("Accuracy = {:.1f}%".format(len(correctlyPredicted)*100/3999))
 
 
 # for 20 hidden units
-result=model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",30,3000,1.0,False)
+result=model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",50,5000,0.8,False)
 predicted = ["".join([str(i) for i in elem]) for elem in result["Predicted"]]
 labels = ["".join([str(i) for i in elem]) for elem in result["Actual"]]
 correctlyPredicted = [i for i in range(3999) if predicted[i]==labels[i]]
@@ -41,7 +41,7 @@ print("Accuracy = {:.1f}%".format(len(correctlyPredicted)*100/3999))
 
 
 # for 30 hidden units
-result = model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",80,10000,1.5,False)
+result = model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",80,10000,1,False)
 predicted = ["".join([str(i) for i in elem]) for elem in result["Predicted"]]
 labels = ["".join([str(i) for i in elem]) for elem in result["Actual"]]
 correctlyPredicted = [i for i in range(3999) if predicted[i]==labels[i]]

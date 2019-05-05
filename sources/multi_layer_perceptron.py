@@ -99,7 +99,7 @@ def mlp_fit(hyper_params, input, label):
         hyper_params,dW1,dW2 = backward(hyper_params, input, label, cache)
         hyper_params = updateWeights(hyper_params,dW1,dW2)
 
-        # logs
+        # Logging control parmaters
         if i % 1000 == 0:
             loss_log.append(np.asscalar(cost))
             print("Iteration = {}   Loss = {:.3f}".format(i, cost))

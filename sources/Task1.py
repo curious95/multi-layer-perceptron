@@ -9,12 +9,15 @@ label=np.array([[0],[1],[1],[0]])
 
 # Training the model
 print("Executing Task 1")
-model.train_mlp(input,label,input,label,"tanh","sigmoid",3,400,0.3,True)
-
+result = model.train_mlp(input,label,input,label,"tanh","sigmoid",2,400,0.3,False)
+print("Training Accuracy = {:.1f}%".format(result["Accuracies"][0]))
 
 # Task 1 Part 2
+print("Testing Accuracy = {:.1f}%".format(result["Accuracies"][1]))
 
 
+
+print("\n\n\nTask 1 Part3 : For random numbers and sin function")
 
 # Task 1 Part 3
 #Taking random numbers
@@ -29,6 +32,7 @@ label_train = label [:150,:]
 input_test = input[150:,:]
 label_test = label [150:,:]
 
-model.train_mlp(input_train,label_train,input_test,label_test,"tanh","linear",10,10000,0.02,True)
-
+result = model.train_mlp(input_train,label_train,input_test,label_test,"tanh","linear",5,10000,0.05,False)
+print("Training Accuracy = {:.1f}%".format(result["Accuracies"][0]))
+print("Testing Accuracy = {:.1f}%".format(result["Accuracies"][1]))
 
