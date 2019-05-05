@@ -24,6 +24,6 @@ label_train = label [:150,:]
 input_test = input[150:,:]
 label_test = label [150:,:]
 
-model.train_mlp(input_train,label_train,input_test,label_test,"tanh","sigmoid",10,10000,0.02)
+model.train_mlp(input_train,label_train,input_test,label_test,"tanh","linear",10,10000,0.02)
 
 
